@@ -1,0 +1,162 @@
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#087f82"><meta name="description" content="مبادرة تطويرية تقنية لمراجعة ومطابقة درجات رايات وتقني محليًا"><link rel="icon" type="image/svg+xml" href="./icon.svg"><title>المراجعة الآلية للدرجات النهائية</title><style>
+:root{font-family:Tahoma,Arial,sans-serif;color:#172b3b;background:#f3f6fa}*{box-sizing:border-box}body{margin:0}header{background:#123d54;color:white;padding:26px max(20px,calc((100vw - 1100px)/2))}h1{margin:0 0 9px;font-size:25px}header p{margin:0;color:#d5e5ec}.wrap{max-width:1100px;margin:24px auto;padding:0 18px}.panel{background:white;border:1px solid #dce5ed;border-radius:15px;padding:22px;margin:16px 0;box-shadow:0 3px 14px #0c263a08}h2{margin:0 0 15px;font-size:19px}.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.step{background:#e8eff3;border-radius:10px;padding:12px;text-align:center;font-size:13px}.step b{display:block;color:#176e74;font-size:22px}.uploadgrid{display:grid;grid-template-columns:1fr 1fr;gap:18px}label{display:block;font-weight:bold;margin:8px 0}input[type=file],select,input[type=text]{width:100%;padding:12px;border:1px solid #cbd8e1;border-radius:9px;background:#fff}select{max-width:100%}.muted{color:#607381;font-size:13px;line-height:1.8}.mapping{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.btn{border:0;background:#116b70;color:white;border-radius:9px;padding:12px 22px;font-size:15px;cursor:pointer}.btn:disabled{opacity:.4;cursor:not-allowed}.secondary{background:#36546a}.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.stat{padding:15px;background:#f1f6f8;border-radius:12px;text-align:center}.stat strong{font-size:25px;display:block}.stat small{color:#4d6372}.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0}.toolbar select{width:auto}.tablewrap{overflow:auto;max-height:480px}table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:10px;border-bottom:1px solid #e1e8ed;text-align:right;white-space:nowrap}th{background:#edf4f7;position:sticky;top:0}.ok{color:#08734d;font-weight:bold}.bad{color:#b22b35;font-weight:bold}.warn{color:#9a6600;font-weight:bold}.error{background:#fff0ee;color:#9c2222;border-radius:9px;padding:12px;margin-top:10px}.success{background:#e9f8f0;color:#17613b;border-radius:9px;padding:12px;margin-top:10px}.hidden{display:none}.note{border-right:4px solid #e0a42c;background:#fff9ea;padding:12px;margin:12px 0}footer{text-align:center;color:#657888;font-size:12px;padding:20px}@media(max-width:700px){.steps,.summary{grid-template-columns:repeat(2,1fr)}.uploadgrid,.mapping{grid-template-columns:1fr}h1{font-size:20px}}@media print{body{background:white}header{background:white;color:black;padding:0}header p{color:#333}.wrap{max-width:none;margin:0;padding:0}.panel{box-shadow:none;border:0;padding:8px;margin:0}.no-print,.steps,.uploadgrid,#filePanel,#mappingPanel,footer{display:none!important}.tablewrap{max-height:none;overflow:visible}th{position:static}table{font-size:10px}tr{break-inside:avoid}.stat{border:1px solid #ccc}}
+
+/* هوية حاسبة الغياب الذكية — تعديل بصري فقط */
+
+:root{font-family:'Cairo','Segoe UI',Tahoma,sans-serif;color:#2c3e50;background:#e6f4f8;--primary:#006699;--secondary:#00aed9}
+body{font-family:'Cairo','Segoe UI',Tahoma,sans-serif;background:linear-gradient(135deg,#e6f4f8 0%,#ffffff 100%);min-height:100vh}
+header{background:transparent;color:var(--primary);text-align:center;padding-top:34px;padding-bottom:12px}
+header h1{font-weight:800;color:var(--primary);font-size:clamp(22px,3.4vw,32px)}
+header p{color:#52738a;font-weight:600}
+.wrap{margin-top:14px}
+.panel{border:1px solid #d1e2e8;border-radius:24px;box-shadow:0 12px 30px rgba(0,0,0,.055);background:#fff}
+h2,h3{color:var(--primary)}
+.step{background:#eff8fb;border:1px solid #d8edf5;border-radius:16px;color:#2c3e50;font-weight:700}
+.step b{color:var(--primary);font-weight:800}
+input[type=file],select,input[type=text]{border:1.5px solid #d1e2e8;border-radius:12px;background:#f8fcfe;font-family:inherit;color:var(--primary)}
+input:focus,select:focus{outline:2px solid #00aed9;outline-offset:1px}
+.btn{background:linear-gradient(135deg,#006699 0%,#00aed9 100%);border-radius:14px;font-family:inherit;font-weight:800;box-shadow:0 4px 12px rgba(0,102,153,.16)}
+.btn.secondary{background:#fff;color:var(--primary);border:1px solid var(--primary);box-shadow:none}
+.stat{background:#f0f8fb;border:1px solid #dceef5;border-radius:16px}
+.stat strong{color:var(--primary)}
+.stat small{color:#52738a}
+th{background:#eaf6fa;color:#006699}
+th,td{border-bottom-color:#dce9ef}
+.muted{color:#60798a}
+.note{border-right-color:#00aed9;background:#f0f9fc;border-radius:12px;color:#375b70}
+.ok{color:#15803d}.bad{color:#dc2626}.warn{color:#b45309}
+.success{background:#f0fdf4;color:#166534}.error{background:#fef2f2;color:#b91c1c}
+footer{color:#6b8799}
+@media print{body{background:white!important}header{color:#006699!important}.panel{box-shadow:none!important;border:0!important}.stat{border:1px solid #ccc!important}}
+
+/* هوية لونية مستقلة للمبادرة التطويرية */
+:root{--primary:#087f82;--secondary:#20a6ac;--brand-blue:#518da7;--brand-mint:#86c992;--brand-gray:#777f83;--brand-dark:#263f49;--brand-border:#d7e7e8}
+body{background:linear-gradient(135deg,#eaf6f6 0%,#f6fafb 48%,#ffffff 100%)}
+header h1{color:var(--primary)}header p{color:#557982}
+.panel{border-color:var(--brand-border);box-shadow:0 12px 30px rgba(18,94,105,.065)}
+h2,h3{color:var(--primary)}
+.step{background:#edf8f8;border-color:#d1e9e8;color:var(--brand-dark)}
+.step:nth-child(2){background:#edf6f9;border-color:#d8e9ef}.step:nth-child(3){background:#f0f9f2;border-color:#d8ebdc}.step:nth-child(4){background:#f3f6f7;border-color:#dfe6e8}
+.step b{color:var(--primary)}.step:nth-child(2) b{color:var(--brand-blue)}.step:nth-child(3) b{color:#4b9966}.step:nth-child(4) b{color:var(--brand-gray)}
+input[type=file],select,input[type=text]{border-color:#cddfe2;background:#f9fdfd;color:var(--brand-dark)}
+input:focus,select:focus{outline-color:var(--secondary)}
+.btn{background:linear-gradient(135deg,#087f82 0%,#20a6ac 65%,#518da7 100%);box-shadow:0 4px 12px rgba(8,127,130,.16)}
+.btn.secondary{background:#fff;color:var(--primary);border-color:var(--primary)}
+.stat{background:#eff8f8;border-color:#d7e9e9}.stat:nth-child(2){background:#f0faf2;border-color:#d8ecdc}.stat:nth-child(3){background:#fff6f3;border-color:#f2e2da}.stat:nth-child(4){background:#f0f6f9;border-color:#d8e7ed}
+.stat strong{color:var(--primary)}.stat:nth-child(2) strong{color:#3c925b}.stat:nth-child(3) strong{color:#b95149}.stat:nth-child(4) strong{color:var(--brand-blue)}
+.stat small,.muted{color:#5b7580}th{background:#e8f4f5;color:#126f78}th,td{border-bottom-color:#dce9ea}
+.note{border-right-color:var(--brand-blue);background:#eef7f9;color:#355d6c}
+.ok{color:#29804b}.bad{color:#b84042}.warn{color:#9a6b21}
+footer{color:#74878c}
+@media print{header h1{color:#087f82!important}.stat{border:1px solid #ccc!important}}
+.file-entry{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 9px;margin:5px 0;border:1px solid #c7e4e1;background:#f1faf9;border-radius:8px;overflow-wrap:anywhere}.remove-file{border:1px solid #b6d4d1;background:white;color:#176e74;border-radius:6px;padding:5px 10px;cursor:pointer;flex-shrink:0}
+</style></head><body><header><h1>نظام المراجعة الآلية للدرجات النهائية</h1><p>مبادرة تطويرية تقنية لمطابقة درجات رايات وتقني — معالجة محلية داخل المتصفح</p></header><main class="wrap"><div class="steps no-print"><div class="step"><b>١</b>تقرير رايات</div><div class="step"><b>٢</b>تقرير تقني</div><div class="step"><b>٣</b>المطابقة</div><div class="step"><b>٤</b>الطباعة</div></div>
+<section class="panel" id="filePanel"><h2>١ و٢ — رفع التقارير</h2><div class="uploadgrid"><div><label for="rayat">تقرير رايات (CSV)</label><input type="file" id="rayat" multiple accept=".csv"><div id="rayatFiles" class="muted"></div><div id="rayatInfo" class="muted">يمكن اختيار عدة ملفات دفعة واحدة، وإضافة ملفات أخرى لاحقًا.</div></div><div><label for="taqni">تقرير تقني (XLSX)</label><input type="file" id="taqni" multiple accept=".xlsx"><div id="taqniFiles" class="muted"></div><div id="taqniInfo" class="muted">يمكن اختيار عدة ملفات دفعة واحدة، وإضافة ملفات أخرى لاحقًا.</div></div></div><div id="fileError" role="alert"></div><div class="toolbar"><button class="btn secondary" id="clearTop" type="button">مسح جميع البيانات</button></div></section>
+<section class="panel hidden" id="mappingPanel"><h2>تأكيد الأعمدة</h2><p class="muted">اختيرت الأعمدة تلقائيًا حسب تقاريرك. يمكنك تغيير الاختيار إذا اختلف شكل التقرير.</p><div class="uploadgrid"><div><h3>رايات</h3><div class="mapping" id="rayatMapping"></div></div><div><h3>تقني</h3><div class="mapping" id="taqniMapping"></div></div></div><div class="toolbar"><button class="btn" id="compare">مطابقة الدرجات</button><span class="muted">المطابقة بالرقم الجامعي، وتقريب تقني مثل Excel: ROUND(x,0).</span></div></section>
+<section class="panel hidden" id="results"><h2>٣ — نتائج المطابقة</h2><div class="summary" id="summary"></div><div id="issues" class="note hidden"></div><div class="toolbar no-print"><label for="filter">عرض</label><select id="filter"><option value="all">جميع النتائج</option><option value="match">المتطابقة</option><option value="different">المختلفة</option><option value="missing">الناقصة</option><option value="duplicate">المكررة</option></select><button class="btn secondary" id="print">٤ — طباعة / حفظ PDF</button><button class="btn secondary" id="export">تصدير CSV للنتائج</button><button class="btn secondary" id="clearAll" type="button">مسح جميع البيانات</button></div><p id="printDate" class="muted"></p><div class="tablewrap"><table><thead><tr><th>م</th><th>اسم المتدرب/ـة</th><th>الرقم الجامعي</th><th>درجة تقني</th><th>تقني بعد التقريب</th><th>درجة رايات</th><th>النتيجة</th></tr></thead><tbody id="tbody"></tbody></table></div></section></main><footer>نظام المراجعة الآلية للدرجات النهائية — مبادرة تطويرية تقنية مستقلة</footer>
+<script src="./xlsx-local.js"></script><script>
+'use strict';
+const $=id=>document.getElementById(id), datasets={}, mappings={}, output=[], uploaded={rayat:[],taqni:[]};
+const norm=x=>String(x??'').normalize('NFKC').replace(/[\u064B-\u065F\u0670]/g,'').replace(/[إأآ]/g,'ا').replace(/ى/g,'ي').replace(/\s+/g,' ').trim().toLowerCase();
+const idNorm=x=>String(x??'').trim().replace(/[٠-٩]/g,c=>String('٠١٢٣٤٥٦٧٨٩'.indexOf(c))).replace(/[۰-۹]/g,c=>String('۰۱۲۳۴۵۶۷۸۹'.indexOf(c))).replace(/\.0+$/,'');
+const excelRound=n=>n<0?-Math.floor(-n+0.5):Math.floor(n+0.5);
+const number=x=>{if(typeof x==='number')return Number.isFinite(x)?x:null;let s=String(x??'').trim().replace(/[٠-٩]/g,c=>String('٠١٢٣٤٥٦٧٨٩'.indexOf(c))).replace(/[۰-۹]/g,c=>String('۰۱۲۳۴۵۶۷۸۹'.indexOf(c))).replace(/,/g,'').replace(/٫/g,'.');return s!==''&&s!=='-'&&Number.isFinite(Number(s))?Number(s):null};
+function parseCSV(text){text=text.replace(/^\uFEFF/,'');let lines=[],row=[],field='',quoted=false;let delimiter=',';const first=text.split(/\r?\n/,1)[0];if((first.match(/;/g)||[]).length>(first.match(/,/g)||[]).length)delimiter=';';for(let i=0;i<text.length;i++){let c=text[i];if(c==='"'){if(quoted&&text[i+1]==='"'){field+='"';i++}else quoted=!quoted}else if(c===delimiter&&!quoted){row.push(field);field=''}else if((c==='\n'||c==='\r')&&!quoted){if(c==='\r'&&text[i+1]==='\n')i++;row.push(field);if(row.some(v=>v.trim()))lines.push(row);row=[];field=''}else field+=c}row.push(field);if(row.some(v=>v.trim()))lines.push(row);return lines}
+function tableFromRows(rows){let best=0,score=-1;for(let i=0;i<Math.min(rows.length,20);i++){let r=rows[i]||[];let s=r.filter(v=>/(اسم|المتدرب|المستخدم|الجامعي|التقدير|المقرر|المجموع|الدرجه|الدرجة)/.test(norm(v))).length;if(s>score){score=s;best=i}}const headers=(rows[best]||[]).map((v,i)=>String(v??'').trim()||`عمود ${i+1}`);return {headers,rows:rows.slice(best+1).filter(r=>r.some(v=>String(v??'').trim()!==''))}}
+async function readTables(file){
+ let sheets=[];
+ if(file.name.toLowerCase().endsWith('.csv')){
+  const b=await file.arrayBuffer();let txt=new TextDecoder('utf-8',{fatal:false}).decode(b);
+  if(txt.includes('\ufffd'))txt=new TextDecoder('windows-1256').decode(b);
+  sheets=[tableFromRows(parseCSV(txt))];
+ }else{
+  if(!window.XLSX)throw Error('تعذر تشغيل قارئ Excel المحلي.');
+  const wb=await XLSX.readLocal(await file.arrayBuffer());
+  sheets=wb.SheetNames.map(name=>tableFromRows(XLSX.utils.sheet_to_json(wb.Sheets[name],{header:1,defval:'',raw:true}))).filter(s=>s.headers.length>1);
+ }
+ return sheets.filter(s=>s.rows.length&&s.headers.length>1);
+}
+function refreshFiles(type){
+ const list=$(type+'Files');list.replaceChildren();
+ uploaded[type].forEach((item,i)=>{
+  const line=document.createElement('div');line.className='file-entry';
+  const title=document.createElement('span');title.textContent=`${item.file.name} — ${item.rows.length} صف`;
+  const remove=document.createElement('button');remove.type='button';remove.className='remove-file no-print';remove.textContent='إزالة';
+  remove.addEventListener('click',()=>{uploaded[type].splice(i,1);rebuild(type)});
+  line.append(title,remove);list.append(line);
+ });
+ const count=uploaded[type].reduce((n,x)=>n+x.rows.length,0);
+ $(type+'Info').textContent=uploaded[type].length?`الإجمالي: ${uploaded[type].length} ملف، ${count} صف`:'لم تتم إضافة ملفات بعد.';
+ $(type+'Info').className=uploaded[type].length?'success':'muted';
+}
+function rebuild(type){
+ const items=uploaded[type];
+ if(!items.length){delete datasets[type];$('mappingPanel').classList.add('hidden');$('results').classList.add('hidden');refreshFiles(type);return}
+ // Normalize each file independently before merging, even when its headings differ.
+ const headers=['اسم المتدربة','الرقم الجامعي','المجموع'];
+ const rows=items.flatMap(item=>{
+  const indices=['name','id','grade'].map(k=>guess(item.headers,type,k));
+  return item.rows.map(r=>indices.map(i=>r[i]??''));
+ });
+ datasets[type]={headers,rows,sheets:items.reduce((n,x)=>n+x.sheets,0)};
+ refreshFiles(type);$('results').classList.add('hidden');
+ if(datasets.rayat&&datasets.taqni)showMappings();else $('mappingPanel').classList.add('hidden');
+}
+async function loadFiles(type,files){
+ if(!files.length)return;
+ const errors=[];
+ $('fileError').textContent='جارٍ قراءة الملفات، يُرجى الانتظار...';
+ $('fileError').className='muted';
+ for(const file of files){
+  try{
+   if(uploaded[type].some(x=>x.file.name===file.name&&x.file.size===file.size&&x.file.lastModified===file.lastModified))continue;
+   if(type==='rayat'&&!/\.csv$/i.test(file.name))throw Error('تقرير رايات يجب أن يكون بصيغة CSV.');
+   if(type==='taqni'&&!/\.xlsx$/i.test(file.name))throw Error('تقرير تقني يجب أن يكون بصيغة XLSX.');
+   const tables=await readTables(file);
+   if(!tables.length)throw Error('لم يُعثر على بيانات');
+   const best=tables.reduce((a,b)=>b.rows.length>a.rows.length?b:a);
+   const compatible=tables.filter(t=>t.headers.map(norm).join('|')===best.headers.map(norm).join('|'));
+   const headers=best.headers;
+   const required=['name','id','grade'].map(k=>guess(headers,type,k));
+   if(required.some(i=>i<0))throw Error('تعذر التعرف على الأعمدة الثلاثة؛ تحققي من بنية التقرير');
+   uploaded[type].push({file,headers,rows:compatible.flatMap(t=>t.rows),sheets:compatible.length});
+  }catch(e){errors.push(`${file.name}: ${e.message}`)}
+ }
+ rebuild(type);
+ $('fileError').textContent=errors.join(' | ');
+ $('fileError').className=errors.length?'error':'';
+ $(type).value='';
+}
+function guess(headers,type,kind){let patterns=kind==='name'?(type==='rayat'?['اسم المتدرب','اسم المتدربة']:['الاسم الاول','اسم المتدربة']):kind==='id'?(type==='rayat'?['رقم المتدرب','الرقم الجامعي']:['اسم المستخدم','الرقم الجامعي']):(type==='rayat'?['رمز التقدير','الدرجة النهائية','المجموع']:['اجمالي المقرر (حقيقي)','الدرجة النهائية','المجموع']);for(let p of patterns){let i=headers.findIndex(h=>norm(h)===norm(p));if(i>=0)return i}return -1}
+function showMappings(){for(const type of ['rayat','taqni']){let target=$(type+'Mapping');target.replaceChildren();for(const [kind,label] of [['name','اسم المتدربة'],['id','الرقم الجامعي'],['grade','المجموع']]){let wrap=document.createElement('div'),lab=document.createElement('label'),sel=document.createElement('select');lab.textContent=label;sel.id=type+'_'+kind;let opt=document.createElement('option');opt.value='';opt.textContent='اختاري العمود';sel.append(opt);datasets[type].headers.forEach((h,i)=>{let o=document.createElement('option');o.value=i;o.textContent=h;sel.append(o)});let selected=guess(datasets[type].headers,type,kind);sel.value=selected<0?'':String(selected);wrap.append(lab,sel);target.append(wrap)}}$('mappingPanel').classList.remove('hidden');$('results').classList.add('hidden')}
+function records(type){let m=Object.fromEntries(['name','id','grade'].map(k=>[k,Number($(type+'_'+k).value)]));if(['name','id','grade'].some(k=>$(type+'_'+k).value===''))throw Error('حددي الأعمدة الثلاثة في كل تقرير.');return datasets[type].rows.map((r,i)=>({name:String(r[m.name]??'').trim(),id:idNorm(r[m.id]),raw:r[m.grade],grade:number(r[m.grade]),row:i+2})).filter(r=>r.id||r.name||String(r.raw??'').trim())}
+function grouped(rows){let map=new Map();for(let r of rows){if(!r.id)continue;if(!map.has(r.id))map.set(r.id,[]);map.get(r.id).push(r)}return map}
+function compare(){try{let r=records('rayat'),t=records('taqni'),rm=grouped(r),tm=grouped(t);output.length=0;let ids=[...new Set([...tm.keys(),...rm.keys()])];for(let id of ids){let a=tm.get(id)||[],b=rm.get(id)||[],x=a[0],y=b[0],status;if(a.length>1||b.length>1)status='duplicate';else if(!x||!y||x.grade===null||y.grade===null)status='missing';else status=excelRound(x.grade)===y.grade?'match':'different';output.push({id,name:x?.name||y?.name||'',t:x?.grade??null,r:y?.grade??null,status})}for(let typeRows of [t,r])for(let row of typeRows.filter(v=>!v.id))output.push({id:'',name:row.name,t:null,r:null,status:'missing'});$('results').classList.remove('hidden');$('printDate').textContent='تاريخ المراجعة: '+new Date().toLocaleString('ar-SA');let counts={match:0,different:0,missing:0,duplicate:0};output.forEach(x=>counts[x.status]++);$('summary').replaceChildren();for(let [label,value] of [['إجمالي السجلات',output.length],['متطابقة',counts.match],['مختلفة',counts.different],['تحتاج مراجعة',counts.missing+counts.duplicate]]){let box=document.createElement('div');box.className='stat';let strong=document.createElement('strong'),small=document.createElement('small');strong.textContent=value;small.textContent=label;box.append(strong,small);$('summary').append(box)}let issues=[];if(counts.duplicate)issues.push(`${counts.duplicate} رقم جامعي مكرر؛ يجب مراجعته يدويًا.`);if(counts.missing)issues.push(`${counts.missing} سجل مفقود أو بدرجة غير صالحة.`);$('issues').textContent=issues.join(' ');$('issues').classList.toggle('hidden',!issues.length);render();$('results').scrollIntoView({behavior:'smooth'})}catch(e){$('fileError').className='error';$('fileError').textContent=e.message;$('filePanel').scrollIntoView()}}
+const statuses={match:['مُطابق','ok'],different:['غير مُطابق','bad'],missing:['ناقص / غير موجود','warn'],duplicate:['رقم جامعي مكرر','warn']};
+function render(){let filter=$('filter').value,rows=output.filter(r=>filter==='all'||(filter==='missing'?r.status==='missing':r.status===filter));$('tbody').replaceChildren();rows.forEach((r,i)=>{let tr=document.createElement('tr'),values=[i+1,r.name,r.id,r.t??'—',r.t===null?'—':excelRound(r.t),r.r??'—',statuses[r.status][0]];values.forEach((v,j)=>{let td=document.createElement('td');td.textContent=String(v);if(j===6)td.className=statuses[r.status][1];tr.append(td)});$('tbody').append(tr)})}
+function exportCSV(){let head=['م','اسم المتدربة','الرقم الجامعي','درجة تقني','تقني بعد التقريب','درجة رايات','النتيجة'];let data=output.map((r,i)=>[i+1,r.name,r.id,r.t??'',r.t===null?'':excelRound(r.t),r.r??'',statuses[r.status][0]]);let csv='\uFEFF'+[head,...data].map(row=>row.map(x=>'"'+String(x).replace(/"/g,'""')+'"').join(',')).join('\r\n');let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='نتائج_مطابقة_الدرجات.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+function clearAllData(){
+  for(const type of ['rayat','taqni']){
+    uploaded[type].length=0;
+    delete datasets[type];
+    delete mappings[type];
+    $(type).value='';
+    refreshFiles(type);
+    $(type+'Mapping').replaceChildren();
+  }
+  output.length=0;
+  $('tbody').replaceChildren();
+  $('summary').replaceChildren();
+  $('issues').textContent='';
+  $('printDate').textContent='';
+  $('fileError').textContent='';
+  $('mappingPanel').classList.add('hidden');
+  $('results').classList.add('hidden');
+  $('filter').value='all';
+  $('filePanel').scrollIntoView({behavior:'smooth'});
+}
+$('clearAll').addEventListener('click',clearAllData);
+$('clearTop').addEventListener('click',clearAllData);
+$('rayat').addEventListener('change' ,e=>loadFiles('rayat',Array.from(e.target.files)));$('taqni').addEventListener('change',e=>loadFiles('taqni',Array.from(e.target.files)));$('compare').addEventListener('click',compare);$('filter').addEventListener('change',render);$('print').addEventListener('click',()=>window.print());$('export').addEventListener('click',exportCSV);
+
+</script></body></html>
