@@ -66,7 +66,7 @@ header h1{font-size:clamp(30px,4.6vw,44px);line-height:1.3;margin-bottom:6px}hea
 @media(max-width:550px){.desktop-banner{margin:12px 10px 0;padding:9px 10px;gap:7px}.desktop-banner strong{font-size:clamp(11px,2.7vw,14px)}.desktop-banner button{padding:9px 12px;font-size:12px}}
 
 /* Title font only; all other typography remains unchanged. */
-header h1{font-family:Arial,Tahoma,sans-serif;font-weight:700}
+header h1{font-family:'Cairo',Tahoma,Arial,sans-serif;font-weight:700}
 
 /* Compact, understated desktop shortcut banner */
 .desktop-banner{width:fit-content!important;max-width:calc(100% - 28px)!important;margin:14px auto 0!important;padding:7px 11px!important;gap:12px!important;border-radius:999px!important;border:1px solid #e4edf0!important;background:#fbfdfd!important;box-shadow:0 2px 9px rgba(15,52,64,.035)!important;justify-content:center!important;flex-wrap:nowrap!important}
@@ -94,9 +94,22 @@ header h1{font-family:Arial,Tahoma,sans-serif;font-weight:700}
 .desktop-dialog .close-dialog{font-size:12px;font-weight:500;padding:7px 13px}
 @media(max-width:550px){.desktop-banner button{font-size:10px!important;padding:6px 9px!important}.desktop-dialog{padding:16px;font-size:12px}.desktop-dialog p,.desktop-dialog li{font-size:12px}}
 
-/* Cairo typography throughout the application, preserving the existing title font. */
+/* Cairo typography throughout the application, including the main title. */
 :root,html,body,button,input,select,textarea,table,.desktop-dialog{font-family:'Cairo',Tahoma,Arial,sans-serif!important}
-header h1{font-family:Arial,Tahoma,sans-serif!important}
+header h1{font-family:'Cairo',Tahoma,Arial,sans-serif!important}
+
+/* Print only: separate the application credit from the trainer signature. */
+@media print {
+  #signatureArea { margin-bottom: 0 !important; }
+  body > footer {
+    margin-top: 95px !important;
+    padding-top: 20px !important;
+    border-top: 1px solid #dce5ed !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
+    text-align: center;
+  }
+}
 </style></head><body><aside class="desktop-banner no-print" aria-label="الوصول السريع من سطح المكتب"><strong>استخدمي مطابقة الدرجات كتطبيق على سطح المكتب</strong><button type="button" id="desktopHelp">طريقة الإضافة</button></aside><dialog id="desktopDialog" class="desktop-dialog" aria-labelledby="desktopDialogTitle"><button class="close-dialog" type="button" id="closeDesktopHelp">إغلاق</button><h2 id="desktopDialogTitle">إضافة الموقع إلى سطح المكتب</h2><p>افتحي الموقع عبر Chrome أو Edge على الكمبيوتر، ثم اتبعي الخطوات التالية:</p><h3>Google Chrome</h3><ol><li>افتحي قائمة النقاط الثلاث (⋮).</li><li>اختاري <b>البث والحفظ والمشاركة</b> ثم <b>إنشاء اختصار</b>، أو <b>تثبيت الصفحة كتطبيق</b> إذا ظهر الخيار.</li><li>أكّدي الإنشاء، ثم افتحي الاختصار من سطح المكتب.</li></ol><h3>Microsoft Edge</h3><ol><li>افتحي قائمة النقاط الثلاث (…)، ثم <b>التطبيقات</b>.</li><li>اختاري <b>تثبيت هذا الموقع كتطبيق</b>، ثم فعّلي إنشاء اختصار سطح المكتب إذا ظهر الخيار.</li></ol><p class="muted">هذه الطريقة تنشئ اختصارًا للموقع أو تثبته كتطبيق ويب بحسب المتصفح. يلزم اتصال بالإنترنت عند فتح الموقع، ولا يتم تثبيت برنامج مستقل على الجهاز.</p></dialog><script>
 // تشغيل إرشادات الإضافة بشكل مستقل عن معالجة التقارير.
 (function(){
