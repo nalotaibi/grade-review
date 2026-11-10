@@ -1,10 +1,39 @@
-/* Minimal local XLSX reader. No network requests or persistent data storage. */
+/* Local XLSX reader; JSZip bundled alongside. */
 (function(){'use strict';
-const decoder=new TextDecoder();
-const xml=s=>new DOMParser().parseFromString(s,'application/xml');
-const children=(e,name)=>Array.from(e?.getElementsByTagName('*')||[]).filter(n=>n.localName===name);
-function column(ref){const s=(ref.match(/^[A-Z]+/i)||['A'])[0].toUpperCase();let n=0;for(const c of s)n=n*26+c.charCodeAt(0)-64;return n-1}
-async function unzip(buffer){const data=new Uint8Array(buffer),view=new DataView(buffer),files={};let end=-1;for(let p=data.length-22;p>=Math.max(0,data.length-65557);p--){if(view.getUint32(p,true)===0x06054b50){end=p;break}}if(end<0)throw Error('ملف Excel غير صالح');let count=view.getUint16(end+10,true),p=view.getUint32(end+16,true);for(let i=0;i<count;i++){if(view.getUint32(p,true)!==0x02014b50)throw Error('تعذر قراءة ملف Excel');let method=view.getUint16(p+10,true),compressed=view.getUint32(p+20,true),nlen=view.getUint16(p+28,true),extra=view.getUint16(p+30,true),comment=view.getUint16(p+32,true),offset=view.getUint32(p+42,true);let name=decoder.decode(data.slice(p+46,p+46+nlen));p+=46+nlen+extra+comment;if(name.endsWith('/'))continue;let start=offset+30+view.getUint16(offset+26,true)+view.getUint16(offset+28,true);let bytes=data.slice(start,start+compressed);if(method===8){if(typeof DecompressionStream==='undefined')throw Error('المتصفح لا يدعم قراءة XLSX محليًا. استخدمي Chrome حديثًا');const stream=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate-raw'));bytes=new Uint8Array(await new Response(stream).arrayBuffer())}else if(method!==0)throw Error('نوع ضغط Excel غير مدعوم');files[name]=bytes}return files}
-async function readXlsx(buffer){const files=await unzip(buffer),read=path=>files[path]?xml(decoder.decode(files[path])):null;const strings=[];const shared=read('xl/sharedStrings.xml');if(shared)for(const si of children(shared,'si'))strings.push(children(si,'t').map(t=>t.textContent).join(''));const book=read('xl/workbook.xml');if(!book)throw Error('تعذر قراءة المصنف');const rel=read('xl/_rels/workbook.xml.rels');const targets={};if(rel)for(const r of children(rel,'Relationship'))targets[r.getAttribute('Id')]=r.getAttribute('Target');const names=[],sheets={};for(const sh of children(book,'sheet')){let name=sh.getAttribute('name'),id=sh.getAttribute('r:id')||sh.getAttributeNS('http://schemas.openxmlformats.org/officeDocument/2006/relationships','id');let target=targets[id]||'';target=target.replace(/^\//,'').replace(/^xl\//,'');let path='xl/'+target.replace(/^\.\//,'');if(!files[path]){let num=(target.match(/sheet\d+\.xml/)||[])[0];path='xl/worksheets/'+num}const doc=read(path);if(!doc)continue;const rows=[];for(const row of children(doc,'row')){let arr=[];for(const c of children(row,'c')){let index=column(c.getAttribute('r')||'A1'),type=c.getAttribute('t'),value=children(c,'v')[0]?.textContent??'';if(type==='s')value=strings[Number(value)]??'';else if(type==='inlineStr')value=children(c,'t').map(t=>t.textContent).join('');else if(type==='b')value=value==='1';else if(type!=='str'&&value!==''&&!isNaN(Number(value)))value=Number(value);arr[index]=value}rows.push(arr)}names.push(name);sheets[name]=rows}return {SheetNames:names,Sheets:sheets}}
-window.XLSX={read:()=>{throw Error('استخدمي قارئ XLSX المحلي غير المتزامن')},readLocal:readXlsx,utils:{sheet_to_json:(sheet)=>sheet}};
+const parse=s=>new DOMParser().parseFromString(s,'application/xml');
+const elems=(n,t)=>Array.from(n.getElementsByTagName(t));
+const txt=n=>n?.textContent||'';
+const attr=(n,k)=>n?.getAttribute(k)||'';
+const colIndex=ref=>{let n=0;for(const c of (ref.match(/^[A-Z]+/i)||[''])[0].toUpperCase())n=n*26+c.charCodeAt(0)-64;return n-1};
+async function readLocal(data){
+ if(!window.JSZip)throw Error('مكتبة فك ضغط Excel غير موجودة.');
+ const zip=await JSZip.loadAsync(data);
+ const get=async p=>{const f=zip.file(p);if(!f)throw Error('ملف Excel غير مكتمل: '+p);return parse(await f.async('string'))};
+ const workbook=await get('xl/workbook.xml');
+ const rels=await get('xl/_rels/workbook.xml.rels');
+ const targets={};for(const r of elems(rels,'Relationship'))targets[attr(r,'Id')]=attr(r,'Target');
+ let strings=[];
+ if(zip.file('xl/sharedStrings.xml')){const ss=await get('xl/sharedStrings.xml');strings=elems(ss,'si').map(si=>elems(si,'t').map(txt).join(''))}
+ const sheets={},names=[];
+ for(const sheet of elems(workbook,'sheet')){
+  const name=attr(sheet,'name'),rid=sheet.getAttributeNS('http://schemas.openxmlformats.org/officeDocument/2006/relationships','id')||attr(sheet,'r:id');
+  let target=targets[rid];if(!target)continue;
+  target=target.replace(/^\/+/, '');const path=target.startsWith('xl/')?target:'xl/'+target.replace(/^\.\//,'');
+  const doc=await get(path);const rows=[];
+  for(const row of elems(doc,'row')){
+   const ri=Math.max(0,Number(attr(row,'r')||rows.length+1)-1);const values=[];
+   for(const c of Array.from(row.children).filter(x=>x.localName==='c')){
+    const ci=colIndex(attr(c,'r'));if(ci<0||ci>10000)continue;
+    const type=attr(c,'t'),v=Array.from(c.children).find(x=>x.localName==='v');let value='';
+    if(type==='inlineStr')value=elems(c,'t').map(txt).join('');
+    else if(type==='s')value=strings[Number(txt(v))]??'';
+    else if(type==='b')value=txt(v)==='1';
+    else if(type==='e')value='';
+    else if(v)value=type==='str'?txt(v):(Number.isFinite(Number(txt(v)))?Number(txt(v)):txt(v));
+    values[ci]=value;
+   }rows[ri]=values;
+  }names.push(name);sheets[name]={rows};
+ }return {SheetNames:names,Sheets:sheets};
+}
+window.XLSX={readLocal,utils:{sheet_to_json:(sheet,opts)=>sheet.rows.filter(Boolean).map(r=>Array.from({length:r.length},(_,i)=>r[i]??''))}};
 })();
